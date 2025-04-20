@@ -79,20 +79,11 @@ class AssessmentRecommender:
         recommendations = []
         for idx in top_indices:
             assessment = self.assessments_df.iloc[idx]
-            similarity_score = similarity_scores[0][idx]
             recommendations.append({
-                'id': str(idx),
-                'title': assessment['Assessment Name'],
-                'description': '',  # Add description if available in your dataset
-                'category': 'Assessment',  # Add category if available in your dataset
-                'duration': assessment['Duration'],
-                'skills': [],  # Add skills if available in your dataset
-                'benefits': [],  # Add benefits if available in your dataset
-                'suitableFor': [],  # Add suitable roles if available in your dataset
-                'imageUrl': '',  # Add image URL if available
-                'jobLevel': assessment['Job Level'],
-                'remoteTestingAvailable': assessment['Remote Testing'] == 'Yes',
-                'similarity_score': similarity_score
+                'name': assessment['Assessment Name'],
+                'url': assessment['URL'] if not pd.isna(assessment['URL']) else '',
+                'remote_testing': 'Yes' if assessment['Remote Testing'] == 'Yes' else 'No',
+                'duration': assessment['Duration'] if not pd.isna(assessment['Duration']) else 'Not specified'
             })
         
         return recommendations
@@ -134,7 +125,7 @@ if __name__ == "__main__":
     recommendations = recommender.get_recommendations(test_description)
     print("\nTest Recommendations:")
     for i, rec in enumerate(recommendations, 1):
-        print(f"\n{i}. {rec['title']}")
-        print(f"   Similarity Score: {rec['similarity_score']}")
-        print(f"   Job Level: {rec['jobLevel']}")
+        print(f"\n{i}. {rec['name']}")
+        print(f"   URL: {rec['url']}")
+        print(f"   Remote Testing: {rec['remote_testing']}")
         print(f"   Duration: {rec['duration']}") 
